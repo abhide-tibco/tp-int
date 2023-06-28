@@ -1,0 +1,348 @@
+helmCharts:
+  - name: bwprovisioner
+    namespace: ${NAMESPACE}
+    repository:
+      git:
+        host: https://github.com/sasahoo-tibco/tp-integration.git
+        path: /helm/charts/bwprovisioner
+        branch: ${BRANCH}
+    values:
+      - content: |
+          serviceAccount:
+            create: false
+            name: dp-integration-default
+          global:
+            orchestrator:
+              data:
+                namspace: ${NAMESPACE}
+              image:
+                registry: 664529841144.dkr.ecr.ap-southeast-2.amazonaws.com
+                tag: 2557-dp-integration
+          ingress:
+            annotations:
+              haproxy.org/cors-enable: "true"
+              haproxy.org/load-balance: leastconn
+              haproxy.org/src-ip-header: X-Real-IP
+              haproxy.org/timeout-http-request: 600s
+              ingress.kubernetes.io/rewrite-target: /
+              meta.helm.sh/release-name: bwprovisioner
+              meta.helm.sh/release-namespace: ${NAMESPACE}
+            className: ${INGRESS_CLASS}
+            enabled: true
+            hosts:
+            - host: ""
+              paths:
+              - path: /tibco/agent/integration/bwprovisioner/
+                pathType: Prefix
+
+          volumes:
+            orchestrator:
+              persistentVolumeClaim:
+                create: true
+              storageClassName: "gp2"
+                resources:
+                  requests:
+                    storage: 8Gi
+              volumeName: ""
+              existingClaim: ""
+          config:
+            DP_INTERNAL_URL: "test.tci-env.ap-southeast-2.tcie.pro"
+  - name: flogoprovisioner
+    namespace: ${NAMESPACE}
+    repository:
+      git:
+        host: https://github.com/sasahoo-tibco/tp-integration.git
+        path: /helm/charts/flogoprovisioner
+        branch: ${BRANCH}
+    values:
+      - content: |
+          serviceAccount:
+            create: false
+            name: dp-integration-default
+          global:
+            orchestrator:
+              data:
+                namspace: ${NAMESPACE}
+              image:
+                registry: 664529841144.dkr.ecr.ap-southeast-2.amazonaws.com
+                tag: 2557-dp-integration
+          ingress:
+            annotations:
+              haproxy.org/cors-enable: "true"
+              haproxy.org/load-balance: leastconn
+              haproxy.org/src-ip-header: X-Real-IP
+              haproxy.org/timeout-http-request: 600s
+              ingress.kubernetes.io/rewrite-target: /
+              meta.helm.sh/release-name: flogoprovisioner
+              meta.helm.sh/release-namespace: ${NAMESPACE}
+            className: ${INGRESS_CLASS}
+            enabled: true
+            hosts:
+            - host: ""
+              paths:
+              - path: /tibco/agent/integration/flogoprovisioner/
+                pathType: Prefix
+
+          volumes:
+            orchestrator:
+              persistentVolumeClaim:
+                create: true
+              storageClassName: "gp2"
+                resources:
+                  requests:
+                    storage: 8Gi
+              volumeName: ""
+              existingClaim: ""
+          config:
+            DP_INTERNAL_URL: "test.tci-env.ap-southeast-2.tcie.pro"
+  - name: orchestrator
+    namespace: ${NAMESPACE}
+    repository:
+      git:
+        host: https://github.com/sasahoo-tibco/tp-integration.git
+        path: /helm/charts/orchestrator
+        branch: ${BRANCH}
+    values:
+      - content: |
+          serviceAccount:
+            create: false
+            name: dp-integration-default
+          global:
+            orchestrator:
+              data:
+                namspace: ${NAMESPACE}
+              image:
+                registry: 664529841144.dkr.ecr.ap-southeast-2.amazonaws.com
+                tag: 2557-dp-integration
+          ingress:
+            annotations:
+              haproxy.org/cors-enable: "true"
+              haproxy.org/load-balance: leastconn
+              haproxy.org/src-ip-header: X-Real-IP
+              haproxy.org/timeout-http-request: 600s
+              ingress.kubernetes.io/rewrite-target: /
+              meta.helm.sh/release-name: orchestrator
+              meta.helm.sh/release-namespace: ${NAMESPACE}
+            className: ${INGRESS_CLASS}
+            enabled: true
+            hosts:
+            - host: ""
+              paths:
+              - path: /tibco/agent/integration/orchestrator/
+                pathType: Prefix
+
+          volumes:
+            orchestrator:
+              persistentVolumeClaim:
+                create: true
+              storageClassName: "gp2"
+                resources:
+                  requests:
+                    storage: 8Gi
+              volumeName: ""
+              existingClaim: ""
+          config:
+            DP_INTERNAL_URL: "test.tci-env.ap-southeast-2.tcie.pro"
+  - name: buildserver
+    namespace: ${NAMESPACE}
+    repository:
+      git:
+        host: https://github.com/sasahoo-tibco/tp-integration.git
+        path: /helm/charts/buildserver
+        branch: ${BRANCH}
+    values:
+      - content: |
+          serviceAccount:
+            create: false
+            name: dp-integration-default
+          global:
+            orchestrator:
+              data:
+                namspace: ${NAMESPACE}
+              image:
+                registry: 664529841144.dkr.ecr.ap-southeast-2.amazonaws.com
+                tag: 2557-dp-integration
+          ingress:
+            annotations:
+              haproxy.org/cors-enable: "true"
+              haproxy.org/load-balance: leastconn
+              haproxy.org/src-ip-header: X-Real-IP
+              haproxy.org/timeout-http-request: 600s
+              ingress.kubernetes.io/rewrite-target: /
+              meta.helm.sh/release-name: buildserver
+              meta.helm.sh/release-namespace: ${NAMESPACE}
+            className: ${INGRESS_CLASS}
+            enabled: true
+            hosts:
+            - host: ""
+              paths:
+              - path: /tibco/agent/integration/buildserver/
+                pathType: Prefix
+
+          volumes:
+            buildserver:
+              persistentVolumeClaim:
+                create: true
+              storageClassName: "gp2"
+                resources:
+                  requests:
+                    storage: 8Gi
+              volumeName: ""
+              existingClaim: ""
+          config:
+            DP_INTERNAL_URL: "test.tci-env.ap-southeast-2.tcie.pro"
+  - name: bwbuildserver
+    namespace: ${NAMESPACE}
+    repository:
+      git:
+        host: https://github.com/sasahoo-tibco/tp-integration.git
+        path: /helm/charts/bwbuildserver
+        branch: ${BRANCH}
+    values:
+      - content: |
+          serviceAccount:
+            create: false
+            name: dp-integration-default
+          global:
+            orchestrator:
+              data:
+                namspace: ${NAMESPACE}
+              image:
+                registry: 664529841144.dkr.ecr.ap-southeast-2.amazonaws.com
+                tag: 2557-dp-integration
+          ingress:
+            annotations:
+              haproxy.org/cors-enable: "true"
+              haproxy.org/load-balance: leastconn
+              haproxy.org/src-ip-header: X-Real-IP
+              haproxy.org/timeout-http-request: 600s
+              ingress.kubernetes.io/rewrite-target: /
+              meta.helm.sh/release-name: bwbuildserver
+              meta.helm.sh/release-namespace: ${NAMESPACE}
+            className: ${INGRESS_CLASS}
+            enabled: true
+            hosts:
+            - host: ""
+              paths:
+              - path: /tibco/agent/integration/bwbuildserver/
+                pathType: Prefix
+
+          volumes:
+            bwbuildserver:
+              persistentVolumeClaim:
+                create: true
+              storageClassName: "gp2"
+                resources:
+                  requests:
+                    storage: 8Gi
+              volumeName: ""
+              existingClaim: ""
+          config:
+            DP_INTERNAL_URL: "test.tci-env.ap-southeast-2.tcie.pro"
+  - name: flogobuildserver
+    namespace: ${NAMESPACE}
+    repository:
+      git:
+        host: https://github.com/sasahoo-tibco/tp-integration.git
+        path: /helm/charts/flogobuildserver
+        branch: ${BRANCH}
+    values:
+      - content: |
+          serviceAccount:
+            create: false
+            name: dp-integration-default
+          global:
+            orchestrator:
+              data:
+                namspace: ${NAMESPACE}
+              image:
+                registry: 664529841144.dkr.ecr.ap-southeast-2.amazonaws.com
+                tag: 2557-dp-integration
+          ingress:
+            annotations:
+              haproxy.org/cors-enable: "true"
+              haproxy.org/load-balance: leastconn
+              haproxy.org/src-ip-header: X-Real-IP
+              haproxy.org/timeout-http-request: 600s
+              ingress.kubernetes.io/rewrite-target: /
+              meta.helm.sh/release-name: flogobuildserver
+              meta.helm.sh/release-namespace: ${NAMESPACE}
+            className: ${INGRESS_CLASS}
+            enabled: true
+            hosts:
+            - host: ""
+              paths:
+              - path: /tibco/agent/integration/flogobuildserver/
+                pathType: Prefix
+
+          volumes:
+            flogobuildserver:
+              persistentVolumeClaim:
+                create: true
+              storageClassName: "gp2"
+                resources:
+                  requests:
+                    storage: 8Gi
+              volumeName: ""
+              existingClaim: ""
+          config:
+            DP_INTERNAL_URL: "test.tci-env.ap-southeast-2.tcie.pro"
+  - name: apiserver
+    namespace: ${NAMESPACE}
+    repository:
+      git:
+        host: https://github.com/sasahoo-tibco/tp-integration.git
+        path: /helm/charts/apiserver
+        branch: ${BRANCH}
+    values:
+      - content: |
+          serviceAccount:
+            create: false
+            name: dp-integration-default
+          global:
+            orchestrator:
+              data:
+                namspace: ${NAMESPACE}
+              image:
+                registry: 664529841144.dkr.ecr.ap-southeast-2.amazonaws.com
+                tag: 2557-dp-integration
+          ingress:
+            annotations:
+              haproxy.org/cors-enable: "true"
+              haproxy.org/load-balance: leastconn
+              haproxy.org/src-ip-header: X-Real-IP
+              haproxy.org/timeout-http-request: 600s
+              ingress.kubernetes.io/rewrite-target: /
+              meta.helm.sh/release-name: apiserver
+              meta.helm.sh/release-namespace: ${NAMESPACE}
+            className: ${INGRESS_CLASS}
+            enabled: true
+            hosts:
+            - host: ""
+              paths:
+              - path: /tibco/agent/integration/apiserver/
+                pathType: Prefix
+          ingressExternal:
+            annotations:
+              haproxy.org/cors-enable: "true"
+              haproxy.org/load-balance: leastconn
+              haproxy.org/src-ip-header: X-Real-IP
+              haproxy.org/timeout-http-request: 600s
+              ingress.kubernetes.io/rewrite-target: /
+              meta.helm.sh/release-name: apiserver
+              meta.helm.sh/release-namespace: ${NAMESPACE}
+            className: ${INGRESS_CLASS}
+            enabled: true
+            hosts:
+            - host: "test.tci-env.ap-southeast-2.tcie.pro"
+              paths:
+              - path: /
+                pathType: Prefix
+
+          config:
+            DP_INTERNAL_URL: "test.tci-env.ap-southeast-2.tcie.pro"
+    flags:
+      install: true
+      createNamespace: true
+      dependencyUpdate: true
+

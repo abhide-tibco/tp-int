@@ -1,0 +1,153 @@
+# Default values for pluginsmanager.
+# This is a YAML-formatted file.
+# Declare variables to be passed into your templates.
+
+replicaCount: 1
+
+global:
+  pluginsmanager:
+    data:
+      operation: "upload"
+      SOURCE_REGISTRY: 664529841144.dkr.ecr.ap-southeast-2.amazonaws.com
+image:
+  repository: ""
+  pullPolicy: IfNotPresent
+  # Overrides the image tag whose default is the chart appVersion.
+  tag: "latest"
+
+imagePullSecrets: []
+nameOverride: ""
+fullnameOverride: ""
+
+serviceAccount:
+  # Specifies whether a service account should be created
+  create: false
+  # Annotations to add to the service account
+  annotations: {}
+  # The name of the service account to use.
+  # If not set and create is true, a name is generated using the fullname template
+  name: ""
+
+secrets:
+  # Specifies whether a service account should be created
+  create: false
+  # Annotations to add to the service account
+  annotations: {}
+  # The name of the service account to use.
+  # If not set and create is true, a name is generated using the fullname template
+  name: ""
+
+cfg:
+  # Specifies whether a service account should be created
+  create: false
+  # Annotations to add to the service account
+  annotations: {}
+  # The name of the service account to use.
+  # If not set and create is true, a name is generated using the fullname template
+  name: ""
+
+service:
+  type: ClusterIP
+  port: 7820
+  targetPort: 7820
+
+podAnnotations: {}
+
+podSecurityContext: {}
+  # fsGroup: 2000
+
+securityContext: {}
+  # capabilities:
+  #   drop:
+  #   - ALL
+  # readOnlyRootFilesystem: true
+  # runAsNonRoot: true
+  # runAsUser: 1000
+
+resources: {}
+  # We usually recommend not to specify default resources and to leave this as a conscious
+  # choice for the user. This also increases chances charts run on environments with little
+  # resources, such as Minikube. If you do want to specify resources, uncomment the following
+  # lines, adjust them as necessary, and remove the curly braces after 'resources:'.
+  # limits:
+  #   cpu: 100m
+  #   memory: 128Mi
+  # requests:
+  #   cpu: 100m
+  #   memory: 128Mi
+
+nodeSelector: {}
+
+tolerations: []
+
+affinity: {}
+
+plugins:
+#  tci-bw-plugin-acs:
+#    tag: 6.0.0.v8.1-tci-2.0
+#  tci-bw-plugin-sharepoint:
+#    tag: 6.4.0.v7-tci-2.0
+#  tci-bw-plugin-googlepubsub:
+#    tags:
+#       - 6.0.2.v6-tci-2.0
+#    default: 6.0.2.v6-tci-2.0
+  tci-bw-plugin-sqs:
+    tags:
+       - 6.5.2.v5.1-tci-2.0
+       - 6.5.2.v17-tci-2.0
+    default: 6.5.2.v17-tci-2.0
+#  tci-bw-plugin-smpp:
+#    tag:
+#      - 6.0.3.v5-tci-2.0
+#  tci-bw-plugin-odata:
+#    tag: 6.5.0.v7-tci-2.0
+#  tci-bw-plugin-oerp:
+#    tag: 6.0.0.v11-tci-2.0
+#  tci-bw-plugin-ibmi:
+#    tag: 7.3.0.v6.2-tci-2.0
+#  tci-bw-plugin-dataconversion:
+#    tag: 4.7.0.v5.2-tci-2.0
+#  tci-bw-plugin-mq:
+#    tag: 8.8.2.v1.1-tci-2.0
+#  tci-bw-plugin-bc:
+#    tag: 6.3.1.v12.1-tci-2.0
+
+ingress:
+  # -- Enables configuration of ingress to expose pluginsmanager. Requires ingress support in the Kubernetes cluster.
+  enabled: false
+
+networkpolicy:
+  create: true
+  egress:
+      - to:
+          - ipBlock:
+              cidr: 0.0.0.0/0
+
+volumes:
+  pluginsmanager:
+    volumePath: "/data/"
+    mountPath: /usr/share/nginx/html
+    persistentVolumeClaim:
+      # -- If `true`, then a `PersistentVolumeClaim` (PVC) is created.
+      create: false
+
+      # -- Specifies the name of the `StorageClass`
+      # in case of kind use "standard"
+      # in case of EKS "gp2"
+      storageClassName: "gp2"
+
+      # -- Specifies the standard K8s resource requests and/or limits
+      resources:
+        requests:
+          storage: 8Gi
+
+      accessModes:
+        - ReadWriteOnce
+
+      volumeMode: Filesystem
+
+      # -- Specifies the name of the persistent volume
+      volumeName: ""
+
+    # -- When `persistentVolumeClaim.create` is `false`, then use this value to define an already-existing PVC.
+    existingClaim: "test-cp-integration-fs-store-claim"

@@ -1,0 +1,103 @@
+helmCharts:
+  - name: pluginsmanager
+    namespace: ${NAMESPACE}
+    repository:
+      git:
+        host: https://github.com/sasahoo-tibco/tp-integration.git
+        path: /helm/charts/pluginsmanager
+        branch: ${BRANCH}
+    values:
+      - content: |
+          global:
+            pluginsmanager:
+              data:
+                operation: "upload"
+                SOURCE_REGISTRY: 664529841144.dkr.ecr.ap-southeast-2.amazonaws.com
+          plugins:
+            #  tci-bw-plugin-acs:
+            #    tag: 6.0.0.v8.1-tci-2.0
+            #  tci-bw-plugin-sharepoint:
+            #    tag: 6.4.0.v7-tci-2.0
+            tci-bw-plugin-googlepubsub:
+              tag: 6.0.2.v6-tci-2.0
+            tci-bw-plugin-sqs:
+              tag: 6.5.2.v17-tci-2.0
+                #  tci-bw-plugin-smpp:
+                #    tag: 6.0.3.v5-tci-2.0
+                #  tci-bw-plugin-odata:
+                #    tag: 6.5.0.v7-tci-2.0
+                #  tci-bw-plugin-oerp:
+                #    tag: 6.0.0.v11-tci-2.0
+                #  tci-bw-plugin-ibmi:
+                #    tag: 7.3.0.v6.2-tci-2.0
+                #  tci-bw-plugin-dataconversion:
+                #    tag: 4.7.0.v5.2-tci-2.0
+                #  tci-bw-plugin-mq:
+                #    tag: 8.8.2.v1.1-tci-2.0
+                #  tci-bw-plugin-bc:
+                #    tag: 6.3.1.v12.1-tci-2.0
+          networkpolicy:
+            create: true
+            egress:
+              - to:
+                  - ipBlock:
+                      cidr: 0.0.0.0/0
+          volumes:
+            pluginsmanager:
+              # recommended efs volume claim
+              existingClaim: "test-cp-integration-fs-store-claim"
+  - name: pluginsdownloader
+    namespace: ${NAMESPACE}
+    repository:
+      git:
+        host: https://github.com/sasahoo-tibco/tp-integration.git
+        path: /helm/charts/pluginsdownloader
+        branch: ${BRANCH}
+    values:
+      - content: |
+          global:
+            pluginsdownloader:
+              data:
+                operation: "download"
+          image:
+            repository: nginx
+            pullPolicy: IfNotPresent
+            tag: latest
+          plugins:
+            #  tci-bw-plugin-acs:
+            #    tag: 6.0.0.v8.1-tci-2.0
+            #  tci-bw-plugin-sharepoint:
+            #    tag: 6.4.0.v7-tci-2.0
+            tci-bw-plugin-googlepubsub:
+              tag: 6.0.2.v6-tci-2.0
+            tci-bw-plugin-sqs:
+              tag: 6.5.2.v17-tci-2.0
+                #  tci-bw-plugin-smpp:
+                #    tag: 6.0.3.v5-tci-2.0
+                #  tci-bw-plugin-odata:
+                #    tag: 6.5.0.v7-tci-2.0
+                #  tci-bw-plugin-oerp:
+                #    tag: 6.0.0.v11-tci-2.0
+                #  tci-bw-plugin-ibmi:
+                #    tag: 7.3.0.v6.2-tci-2.0
+                #  tci-bw-plugin-dataconversion:
+                #    tag: 4.7.0.v5.2-tci-2.0
+                #  tci-bw-plugin-mq:
+                #    tag: 8.8.2.v1.1-tci-2.0
+                #  tci-bw-plugin-bc:
+                #    tag: 6.3.1.v12.1-tci-2.0
+          networkpolicy:
+            create: true
+            egress:
+              - to:
+                  - ipBlock:
+                      cidr: 0.0.0.0/0
+          volumes:
+            pluginsdownloader:
+              # recommended efs volume claim
+              existingClaim: "test-cp-integration-fs-store-claim"
+    flags:
+      install: true
+      createNamespace: true
+      dependencyUpdate: true
+

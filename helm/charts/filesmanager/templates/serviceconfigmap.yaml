@@ -1,0 +1,10 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  annotations:
+    use-subpath: "true"
+  labels:
+    {{- include "filesmanager.labels" . | nindent 4 }}
+  name: {{ include "filesmanager.fullname" . }}-serviceconfig
+data:
+{{ (.Files.Glob "config/nginx.conf").AsConfig | indent 2 }}

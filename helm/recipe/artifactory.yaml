@@ -1,0 +1,25 @@
+helmCharts:
+  - name: artifactory-oss
+    namespace: ${NAMESPACE}
+    version: "107.55.6"
+    repository:
+      chartMuseum:
+        host: https://charts.jfrog.io
+    values:
+      - content: |
+          nginx:
+            service:
+              type: ClusterIP
+          ingress:
+            enabled: true
+            defaultBackend:
+              enabled: true
+            hosts:
+              oss: test.tci-env.ap-southeast-2.tcie.pro
+            routerPath: /
+            artifactoryPath: /artifactory/
+            className: "traefik"
+
+    flags:
+      install: true
+      createNamespace: true

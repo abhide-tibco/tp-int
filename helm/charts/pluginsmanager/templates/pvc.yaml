@@ -1,0 +1,27 @@
+{{- if .Values.volumes.pluginsmanager.persistentVolumeClaim.create }}
+{{- $pvcCheck :=  (lookup "v1" "PersistentVolumeClaim" .Release.Namespace ( include "pluginsmanager.storage.pvc.name" . )) }}
+{{- if not $pvcCheck }}
+apiVersion: v1
+kind: PersistentVolumeClaim
+metadata:
+  name: {{ include "pluginsmanager.storage.pvc.name" . }}
+  labels:
+  {{- include "pluginsmanager.labels" . | nindent 4 }}
+  annotations:
+    helm.sh/resource-policy: keep
+spec:
+  accessModes:
+    {{- range .Values.volumes.pluginsmanager.persistentVolumeClaim.accessModes }}
+    - {{ . }}
+    {{- end }}
+  storageClassName: {{ .Values.volumes.pluginsmanager.persistentVolumeClaim.storageClassName | quote }}
+  volumeMode: {{ .Values.volumes.pluginsmanager.persistentVolumeClaim.volumeMode }}
+  {{- with .Values.volumes.pluginsmanager.persistentVolumeClaim.resources }}
+  resources:
+    {{- toYaml . | nindent 4 }}
+  {{- end }}
+  {{- if .Values.volumes.pluginsmanager.persistentVolumeClaim.volumeName }}
+  volumeName: {{ .Values.volumes.pluginsmanager.persistentVolumeClaim.volumeName | quote }}
+  {{- end }}
+{{- end }}
+{{- end }}

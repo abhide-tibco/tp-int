@@ -1,0 +1,79 @@
+{{- if eq .Values.global.pluginsmanager.data.operation "upload" }}
+apiVersion: batch/v1
+kind: Job
+metadata:
+  name: {{.Release.Name}}-{{ randAlphaNum 5 | lower }}
+  labels:
+    {{- include "pluginsmanager.labels" . | nindent 4 }}
+spec:
+  backoffLimit: 3
+  ttlSecondsAfterFinished: 3600  # Cleanup of jobs from key/value store after 100 sec
+  template:
+    metadata:
+      {{- with .Values.podAnnotations }}
+      annotations:
+        {{- toYaml . | nindent 8 }}
+      {{- end }}
+      labels:
+        {{- include "pluginsmanager.selectorLabels" . | nindent 8 }}
+    spec:
+      restartPolicy: Never
+      {{- with .Values.imagePullSecrets }}
+      imagePullSecrets:
+        {{- toYaml . | nindent 8 }}
+      {{- end }}
+      {{- if .Values.serviceAccount.enabled }}
+      serviceAccountName: {{ include "pluginsmanager.serviceAccountName" . }}
+      {{- end }}
+      securityContext:
+        {{- toYaml .Values.podSecurityContext | nindent 8 }}
+      containers:
+      {{- range $name, $plugin := .Values.plugins }}
+        {{- range $tag := $plugin.tags }}
+        - name: {{ $name }}-{{ $tag | replace "." "-" }}-image-extraction
+          image: {{ $.Values.global.pluginsmanager.data.SOURCE_REGISTRY }}/stratosphere/container-image-extractor
+          imagePullPolicy: Always
+          env:
+          - name: SOURCE_REGISTRY
+            value: {{ $.Values.global.pluginsmanager.data.SOURCE_REGISTRY }}/tci
+          - name: SOURCE_DOCKER_IMAGE
+            value: "{{ $.Values.global.pluginsmanager.data.SOURCE_REGISTRY }}/tci/{{ $name }}:{{ $tag }}"
+          - name: IMAGE_TEMP_DIR
+            value: "/opt/tmp/{{ $name }}-{{ $tag }}/"
+          - name: SOURCE_DIRS
+            value: "/opt/tibco/bw-contribution/"
+          - name: TARGET_DIRS
+            value: "{{ $.Values.volumes.pluginsmanager.mountPath }}/bw-contribution/{{ $name }}/{{ $tag }}"
+          - name: LOG_LEVEL
+            value: debug
+          volumeMounts:
+          - mountPath: {{ $.Values.volumes.pluginsmanager.mountPath }}
+            name: shared-vol
+        - name: {{ $name }}-{{ $tag | replace "." "-" }}-default
+          image: nginx
+          command:
+            - "bin/bash"
+            - "-c"
+            - |
+              tag={{ $plugin.default }}
+              pluginName={{ $name }}
+              echo "tag:"$tag
+              echo "pluginName:"$pluginName
+              echo {{ $.Values.volumes.pluginsmanager.mountPath }}
+              path={{ $.Values.volumes.pluginsmanager.mountPath }}/bw-contribution/$pluginName/default.ver
+              echo $tag > $path
+          volumeMounts:
+            - name: shared-vol
+              mountPath: {{ $.Values.volumes.pluginsmanager.mountPath }}
+        {{- end }}
+      {{- end }}
+      volumes:
+        - name: shared-vol
+          persistentVolumeClaim:
+            {{- if .Values.volumes.pluginsmanager.persistentVolumeClaim.create }}
+            claimName: {{ include "pluginsmanager.storage.pvc.name" . }}
+            {{- else }}
+            claimName: {{ .Values.volumes.pluginsmanager.existingClaim }}
+            {{- end }}
+
+{{- end }}

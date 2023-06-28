@@ -1,0 +1,1 @@
+TIBCO Platform Integration Application: API Server chart serves the capabilities to provide the APIs for the Applications deploy management in the Data Plane.

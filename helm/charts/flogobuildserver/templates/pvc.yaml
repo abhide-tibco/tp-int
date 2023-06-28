@@ -1,0 +1,27 @@
+{{- if .Values.volumes.flogobuildserver.persistentVolumeClaim.create }}
+{{- $pvcCheck :=  (lookup "v1" "PersistentVolumeClaim" .Release.Namespace ( include "flogobuildserver.storage.pvc.name" . )) }}
+{{- if not $pvcCheck }}
+apiVersion: v1
+kind: PersistentVolumeClaim
+metadata:
+  name: {{ include "flogobuildserver.storage.pvc.name" . }}
+  labels:
+  {{- include "flogobuildserver.labels" . | nindent 4 }}
+  annotations:
+    helm.sh/resource-policy: keep
+spec:
+  accessModes:
+    {{- range .Values.volumes.flogobuildserver.persistentVolumeClaim.accessModes }}
+    - {{ . }}
+    {{- end }}
+  storageClassName: {{ .Values.volumes.flogobuildserver.persistentVolumeClaim.storageClassName | quote }}
+  volumeMode: {{ .Values.volumes.flogobuildserver.persistentVolumeClaim.volumeMode }}
+  {{- with .Values.volumes.flogobuildserver.persistentVolumeClaim.resources }}
+  resources:
+    {{- toYaml . | nindent 4 }}
+  {{- end }}
+  {{- if .Values.volumes.flogobuildserver.persistentVolumeClaim.volumeName }}
+  volumeName: {{ .Values.volumes.flogobuildserver.persistentVolumeClaim.volumeName | quote }}
+  {{- end }}
+{{- end }}
+{{- end }}

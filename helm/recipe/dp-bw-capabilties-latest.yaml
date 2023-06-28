@@ -1,0 +1,51 @@
+capabilityId: TETRIS
+version: 1.0.0
+recipe:
+  helmCharts:
+  - name: bwprovisioner
+    namespace: tibco-dp-chc92v02p4gfuco11sng
+    repository:
+      git:
+        host: https://github.com/sasahoo-tibco/tp-integration.git
+        path: /helm/charts/bwprovisioner
+        branch: main
+    values:
+      - content: |
+          global:
+            bwprovisioner:
+              data:
+                namspace: tibco-dp-chc92v02p4gfuco11sng
+              image:
+                registry: 664529841144.dkr.ecr.us-west-2.amazonaws.com
+                tag: 38-m1-ext
+          ingress:
+            annotations:
+              haproxy.org/cors-enable: "true"
+              haproxy.org/load-balance: leastconn
+              haproxy.org/src-ip-header: X-Real-IP
+              haproxy.org/timeout-http-request: 600s
+              ingress.kubernetes.io/rewrite-target: /
+              meta.helm.sh/release-name: bwprovisioner
+              meta.helm.sh/release-namespace: tibco-dp-chc92v02p4gfuco11sng
+            enabled: true
+            hostsOverride: false
+          volumes:
+            bwprovisioner:
+              persistentVolumeClaim:
+                create: true
+                storageClassName: "gp2"
+                accessModes:
+                  - ReadWriteOnce
+                resources:
+                  requests:
+                    storage: 4Gi
+    flags:
+      install: true
+      createNamespace: true
+      dependencyUpdate: true
+isDevTesting: true
+status: deployed
+region: us-west-2
+tags:
+  - Tag1
+  - Tag2

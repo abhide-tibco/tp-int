@@ -1,0 +1,16 @@
+{{- if .Values.networkpolicy.create }}
+apiVersion: networking.k8s.io/v1
+kind: NetworkPolicy
+metadata:
+  name: {{ include "pluginsmanager.fullname" . }}
+  labels:
+    {{- include "pluginsmanager.labels" . | nindent 4 }}
+spec:
+  podSelector:
+    matchLabels:
+      {{- include "pluginsmanager.selectorLabels" . | nindent 8 }}
+  policyTypes:
+    - Egress
+  egress:
+    {{- toYaml .Values.networkpolicy.egress | nindent 12 }}
+{{- end }}

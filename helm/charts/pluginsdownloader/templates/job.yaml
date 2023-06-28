@@ -1,0 +1,88 @@
+{{- if eq .Values.global.pluginsdownloader.data.operation "download" }}
+apiVersion: batch/v1
+kind: Job
+metadata:
+  name: {{.Release.Name}}-{{ randAlphaNum 5 | lower }}
+  labels:
+    {{- include "pluginsdownloader.labels" . | nindent 4 }}
+spec:
+  backoffLimit: 3
+  ttlSecondsAfterFinished: 3600  # Cleanup of jobs from key/value store after 100 sec
+  template:
+    metadata:
+      {{- with .Values.podAnnotations }}
+      annotations:
+        {{- toYaml . | nindent 8 }}
+      {{- end }}
+      labels:
+        {{- include "pluginsdownloader.selectorLabels" . | nindent 8 }}
+    spec:
+      restartPolicy: Never
+      {{- with .Values.imagePullSecrets }}
+      imagePullSecrets:
+        {{- toYaml . | nindent 8 }}
+      {{- end }}
+      {{- if .Values.serviceAccount.enabled }}
+      serviceAccountName: {{ include "pluginsdownloader.serviceAccountName" . }}
+      {{- end }}
+      securityContext:
+        {{- toYaml .Values.podSecurityContext | nindent 8 }}
+      containers:
+      {{- range $name, $plugin := .Values.plugins }}
+      - name: {{ $name }}-image-downloader
+        image: {{ $.Values.image.repository }}:{{ $.Values.image.tag }}
+        imagePullPolicy: Always
+        command:
+          - "bin/bash"
+          - "-c"
+          - |
+            started=$(date)
+            echo "Job started: $started"
+            sub="tci-bw-plugin-"
+            replace=""
+            pluginName={{ $name }}
+            #echo "name:"$name
+            echo "pluginName:"$pluginName
+            #echo "plugin:"$plugin
+            tag={{ $plugin.tag }}
+            echo "tag:"$tag
+            plugin=$(echo $pluginName | sed -e "s/${sub}/${replace}/g")
+            echo $plugin
+            #dir="/efs/bw-contribution/$plugin"
+            dir="/efs/bw-contribution/$pluginName/$tag/$plugin"
+            #dirs="/efs/bw-contribution/$plugin/"
+            echo "dir:"$dir
+            for entry in "$dir"/*
+            do
+              #echo "$entry"
+              file=$(echo "$entry")
+              echo $file
+              if [ "${entry: -4}" == ".zip" ]; then
+                 echo "entry:""$entry"
+                 filename=$(basename -- "$file")
+                 extension="${filename##*.}"
+                 fileName="${filename%.*}"".zip"
+                 reqUrl="$DP_URL/tibco/agent/integration/orchestrator/v1/artifacts?pluginName=$plugin&tag=$tag&fileName=$fileName&contribName=contribution.json"
+                 echo "reqUrl:"$reqUrl
+                 curl -v -F "file=@$entry;type=application/zip" -F "contrib=@$dir/contribution.json"  $reqUrl
+              fi
+            done
+            ended=$(date)
+            echo "Job ended: $ended"
+        env:
+        - name: DP_URL
+          value: dp-dp1.cp-tibco-sub-sub1.svc.cluster.local
+        volumeMounts:
+        - mountPath: /efs
+          name: shared-vol
+      {{- end }}
+      volumes:
+        - name: shared-vol
+          persistentVolumeClaim:
+            {{- if .Values.volumes.pluginsdownloader.persistentVolumeClaim.create }}
+            claimName: {{ include "pluginsdownloader.storage.pvc.name" . }}
+            {{- else }}
+            claimName: {{ .Values.volumes.pluginsdownloader.existingClaim }}
+            {{- end }}
+
+{{- end }}

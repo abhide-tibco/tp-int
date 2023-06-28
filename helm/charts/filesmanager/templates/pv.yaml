@@ -1,0 +1,21 @@
+{{- if .Values.volumes.filesmanager.persistentVolume.create }}
+apiVersion: v1
+kind: PersistentVolume
+metadata:
+  annotations:
+    pv.kubernetes.io/bound-by-controller: "yes"
+  labels:
+  {{- include "filesmanager.labels" . | nindent 4 }}
+  name: {{ include "filesmanager.storage.pv.name" . }}
+spec:
+  accessModes:
+    {{- range .Values.volumes.filesmanager.persistentVolume.accessModes }}
+    - {{ . }}
+    {{- end }}
+  capacity:
+    storage: {{ .Values.volumes.filesmanager.persistentVolume.storage }}
+  nfs:
+    {{- toYaml .Values.volumes.filesmanager.persistentVolume.nfs | nindent 4 }}
+  persistentVolumeReclaimPolicy: {{ .Values.volumes.filesmanager.persistentVolume.policy }}
+  volumeMode: Filesystem
+{{- end }}

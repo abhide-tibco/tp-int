@@ -1,0 +1,88 @@
+helmCharts:
+  - name: artifactmanager
+    namespace: ${NAMESPACE}
+    repository:
+      git:
+        host: https://github.com/sasahoo-tibco/tp-integration.git
+        path: /helm/charts/artifactmanager
+        branch: ${BRANCH}
+    values:
+      - content: |
+          global:
+            orchestrator:
+              data:
+                namspace: ${NAMESPACE}
+              image:
+                registry: 664529841144.dkr.ecr.ap-southeast-2.amazonaws.com
+                tag: 6-m1-ext
+          ingress:
+            annotations:
+              haproxy.org/cors-enable: "true"
+              haproxy.org/load-balance: leastconn
+              haproxy.org/src-ip-header: X-Real-IP
+              haproxy.org/timeout-http-request: 600s
+              ingress.kubernetes.io/rewrite-target: /
+              meta.helm.sh/release-name: orchestrator
+              meta.helm.sh/release-namespace: ${NAMESPACE}
+            enabled: true
+            hostsOverride: false
+          volumes:
+            artifactmanager:
+              # subPath is optional, if empty, default path will be used
+              subPath: ""
+              persistentVolumeClaim:
+                create: true
+              # Storage details needs to provided
+              storageClassName: "" # Storage Class Name is compulsory
+              resources:
+                requests:
+                  storage: 1Gi # Storage size should be provided
+  - name: apiserver
+      namespace: ${NAMESPACE}
+      repository:
+        git:
+          host: https://github.com/sasahoo-tibco/tp-integration.git
+          path: /helm/charts/apiserver
+          branch: ${BRANCH}
+      values:
+        - content: |
+            global:
+              apiserver:
+                data:
+                  namspace: ${NAMESPACE}
+                image:
+                  registry: 664529841144.dkr.ecr.ap-southeast-2.amazonaws.com
+                  tag: 6-m1-ext
+            ingress:
+              annotations:
+                haproxy.org/cors-enable: "true"
+                haproxy.org/load-balance: leastconn
+                haproxy.org/src-ip-header: X-Real-IP
+                haproxy.org/timeout-http-request: 600s
+                ingress.kubernetes.io/rewrite-target: /
+                meta.helm.sh/release-name: apiserver
+                meta.helm.sh/release-namespace: ${NAMESPACE}
+              enabled: true
+              hostsOverride: false
+            ingressExternal:
+              annotations:
+                haproxy.org/cors-enable: "true"
+                haproxy.org/load-balance: leastconn
+                haproxy.org/src-ip-header: X-Real-IP
+                haproxy.org/timeout-http-request: 600s
+                ingress.kubernetes.io/rewrite-target: /
+                meta.helm.sh/release-name: apiserver
+                meta.helm.sh/release-namespace: ${NAMESPACE}
+              className: ${INGRESS_CLASS}-ext
+              enabled: true
+              hostsOverride: false
+              hosts:
+              - host: "test.tci-env.ap-southeast-2.tcie.pro"
+                paths:
+                - path: /
+                  pathType: Prefix
+    flags:
+      install: true
+      createNamespace: true
+      dependencyUpdate: true
+

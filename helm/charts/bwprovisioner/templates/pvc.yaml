@@ -1,0 +1,27 @@
+{{- if .Values.volumes.bwprovisioner.persistentVolumeClaim.create }}
+{{- $pvcCheck :=  (lookup "v1" "PersistentVolumeClaim" .Release.Namespace ( include "bwprovisioner.storage.pvc.name" . )) }}
+{{- if not $pvcCheck }}
+apiVersion: v1
+kind: PersistentVolumeClaim
+metadata:
+  name: {{ include "bwprovisioner.storage.pvc.name" . }}
+  labels:
+  {{- include "bwprovisioner.labels" . | nindent 4 }}
+  annotations:
+    helm.sh/resource-policy: keep
+spec:
+  accessModes:
+    {{- range .Values.volumes.bwprovisioner.persistentVolumeClaim.accessModes }}
+    - {{ . }}
+    {{- end }}
+  storageClassName: {{ .Values.volumes.bwprovisioner.persistentVolumeClaim.storageClassName | quote }}
+  volumeMode: {{ .Values.volumes.bwprovisioner.persistentVolumeClaim.volumeMode }}
+  {{- with .Values.volumes.bwprovisioner.persistentVolumeClaim.resources }}
+  resources:
+    {{- toYaml . | nindent 4 }}
+  {{- end }}
+  {{- if .Values.volumes.bwprovisioner.persistentVolumeClaim.volumeName }}
+  volumeName: {{ .Values.volumes.bwprovisioner.persistentVolumeClaim.volumeName | quote }}
+  {{- end }}
+{{- end }}
+{{- end }}
