@@ -41,7 +41,7 @@ spec:
               name: server
           securityContext:
             {{- toYaml .Values.securityContext | nindent 12 }}
-          image: {{ .Values.global.flogoprovisioner.image.registry }}/piap/flogo-provisioner:{{ .Values.global.flogoprovisioner.image.tag }}
+          image: flogoprovisioner:latest
           imagePullPolicy: {{ .Values.image.pullPolicy }}
           volumeMounts:
             - name: data
