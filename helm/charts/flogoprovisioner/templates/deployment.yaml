@@ -41,12 +41,14 @@ spec:
               name: server
           securityContext:
             {{- toYaml .Values.securityContext | nindent 12 }}
-          #image: "{{ .Values.image.repository }}:{{ .Values.image.tag | default .Chart.AppVersion }}"
-          image: {{ .Values.global.flogoprovisioner.image.registry }}/tci/tci-flogoprovisioner:{{ .Values.global.flogoprovisioner.image.tag }}
+          image: {{ .Values.global.flogoprovisioner.image.registry }}/piap/flogo-provisioner:{{ .Values.global.flogoprovisioner.image.tag }}
           imagePullPolicy: {{ .Values.image.pullPolicy }}
           volumeMounts:
             - name: data
               mountPath: {{ .Values.volumes.flogoprovisioner.volumePath }}
+              {{- if .Values.volumes.flogoprovisioner.subPath }}
+              subPath: {{ .Values.volumes.flogoprovisioner.subPath }}
+              {{- end }}
           livenessProbe:
             httpGet:
               scheme: HTTP
@@ -68,9 +70,25 @@ spec:
                   key: {{ $filename }}
             {{- end }}
             {{- end }}
+            - name: DATAPLANE_ID
+              value: {{ .Values.global.cp.dataplaneId }}
+            - name: INSTANCE_ID
+              value: {{ .Values.global.cp.instanceId }}
+            - name: SERVER_PORT
+              value: "{{ .Values.service.port }}"
+            - name: CP_DOMAIN
+              value: {{ include "flogoprovisioner.cp.domain" . }}
+            - name: POD_NAMESPACE
+              valueFrom:
+                fieldRef:
+                  fieldPath: metadata.namespace
+            - name: POD_NAME
+              valueFrom:
+                fieldRef:
+                  fieldPath: metadata.name
         {{- if .Values.global.flogoprovisioner.deploymanager.enabled }}
         - name: deploymanager
-          image: {{ .Values.global.flogoprovisioner.deploymanager.image.registry }}/tci/tci-app-proxy:{{ .Values.global.flogoprovisioner.deploymanager.image.tag }}
+          image: {{ .Values.global.cic.data.SYSTEM_DOCKER_REGISTRY }}/tci/tci-app-proxy:{{ .Values.global.flogoprovisioner.deploymanager.image.tag }}
           imagePullPolicy: {{ .Values.image.pullPolicy }}
           resources:
             {{- toYaml .Values.global.flogoprovisioner.deploymanager.resources | nindent 12 }}

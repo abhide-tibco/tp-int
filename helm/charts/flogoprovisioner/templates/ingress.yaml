@@ -15,17 +15,18 @@ apiVersion: extensions/v1beta1
 {{- end }}
 kind: Ingress
 metadata:
-  name: {{ $fullName }}
+  name: {{ .Values.ingress.className }}-{{ $fullName }}
   labels:
     app.kubernetes.io/component: load-balancer
     {{- include "flogoprovisioner.labels" . | nindent 4 }}
   annotations:
+    ingress.kubernetes.io/rewrite-target: /
     {{- with .Values.ingress.annotations }}
       {{- toYaml . | nindent 4 }}
     {{- end }}
 spec:
   {{- if and .Values.ingress.className (semverCompare ">=1.18-0" .Capabilities.KubeVersion.GitVersion) }}
-  ingressClassName: {{ .Values.ingress.className }}
+  ingressClassName: haproxy-dp-{{ .Values.global.cp.dataplaneId }}
   {{- end }}
   {{- if .Values.ingress.tls }}
   tls:
@@ -45,6 +46,7 @@ spec:
     {{- else }}
     - http:
     {{- end }}
+        {{- if $.Values.ingress.hostsOverride -}}
         paths:
           {{- range .paths }}
           - path: {{ .path }}
@@ -55,7 +57,17 @@ spec:
               service:
                 name: {{ $fullName }}
                 port:
-                  number: {{ .Values.service.Port }}
-          {{- end }}
+                  number: {{ $.Values.service.port }}
+            {{- end }}
+        {{- else}}
+        paths:
+          - path: /tibco/agent/integration/{{ $.Values.global.cp.instanceId }}/bwprovisioner/
+            pathType: Prefix
+            backend:
+              service:
+                name: {{ $fullName }}
+                port:
+                  number: {{ $.Values.service.port }}
+        {{- end }}
   {{- end }}
 {{- end }}

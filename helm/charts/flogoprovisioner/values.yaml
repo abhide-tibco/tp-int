@@ -3,13 +3,20 @@
 # Declare variables to be passed into your templates.
 
 global:
-  flogoprovisioner:
+  cic:
+    data:
+      SYSTEM_WHERE: "local"
+      SYSTEM_WHO: "local"
+      SYSTEM_DOCKER_REGISTRY: "reldocker.tibco.com"
+  cp:
+    dataplaneId: dp-dp1
+    instanceId: defaultinstid
+  bwprovisioner:
     data:
       namespace: dp-integration-default
     image:
-      #664529841144.dkr.ecr.ap-southeast-2.amazonaws.com
-      registry: reldocker.tibco.com
-      tag: 2557-dp-integration
+      registry: 664529841144.dkr.ecr.us-west-2.amazonaws.com
+      tag: 38-m1-ext
     deploymanager:
       image:
         enabled: false
@@ -60,8 +67,8 @@ securityContext: {}
 
 service:
   type: ClusterIP
-  port: 7813
-  targetPort: 7813
+  port: 7814
+  targetPort: 7814
 
 #ingress:
 #  enabled: false
@@ -79,11 +86,12 @@ service:
 ingress:
   # -- Enables configuration of ingress to expose flogoprovisioner. Requires ingress support in the Kubernetes cluster.
   enabled: false
-  ingressClassName: haproxy-dp-dp1
+  hostsOverride: false
+  className: haproxy
   hosts:
     - host: ""
       paths:
-        - path: /tibco/agent/integration/flogoprovisioner/
+        - path: /
           pathType: Prefix
   # -- Annotations for the ingress object. See documentation for your ingress controller for valid annotations.
   annotations: {}
@@ -163,24 +171,30 @@ extraInitContainers: []
 #   command: ['echo', "hey"]
 
 config:
-  DP_INTERNAL_URL: "test.tci-env.ap-southeast-2.tcie.pro"
+  #  DP_INTERNAL_URL: "test.tci-env.ap-southeast-2.tcie.pro"
+  DP_INTERNAL_URL: "***NOT AVAILABLE***"
+  BWCE_BASE_VERSION: "5-2.8.1-V47.0.1-GA-m1-ext"
+  ARTIFACT_MANAGER_PORT: "7813"
+  APP_INIT_IMAGE_TAG: "5-m1"
 
 volumes:
   flogoprovisioner:
     volumePath: "/data/"
+    subPath: ""
     persistentVolumeClaim:
       # -- If `true`, then a `PersistentVolumeClaim` (PVC) is created.
       create: true
 
       # -- Specifies the name of the `StorageClass`
-      # in case of kind use "standard"
-      # in case of EKS "gp2"
-      storageClassName: "standard"
+      # in case of Kind/miniKube use "standard"
+      # in case of EKS/EBS "gp2"
+      # in case of EFS ""
+      storageClassName: ""
 
       # -- Specifies the standard K8s resource requests and/or limits
       resources:
         requests:
-          storage: 8Gi
+          storage: 1Gi
 
       accessModes:
         - ReadWriteOnce
@@ -188,7 +202,10 @@ volumes:
       volumeMode: Filesystem
 
       # -- Specifies the name of the persistent volume
+      # If EBS/EFS if storage class given, keep volume name empty
       volumeName: ""
 
     # -- When `persistentVolumeClaim.create` is `false`, then use this value to define an already-existing PVC.
     existingClaim: ""
+rbac:
+  enabled: true
