@@ -207,5 +207,3 @@ volumes:
 
     # -- When `persistentVolumeClaim.create` is `false`, then use this value to define an already-existing PVC.
     existingClaim: ""
-rbac:
-  enabled: true
