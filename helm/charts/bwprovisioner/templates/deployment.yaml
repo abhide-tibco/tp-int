@@ -41,7 +41,7 @@ spec:
               name: server
           securityContext:
             {{- toYaml .Values.securityContext | nindent 12 }}
-          image: {{ .Values.global.bwprovisioner.image.registry }}/piap/bw-provisioner:{{ .Values.global.bwprovisioner.image.tag }}
+          image: bw-provisioner:latest
           imagePullPolicy: {{ .Values.image.pullPolicy }}
           volumeMounts:
             - name: data
