@@ -41,7 +41,7 @@ spec:
               name: server
           securityContext:
             {{- toYaml .Values.securityContext | nindent 12 }}
-          image: bw-provisioner:latest
+          image: {{ .Values.global.bwprovisioner.image.registry }}/piap/bw-provisioner:{{ .Values.global.bwprovisioner.image.tag }}
           imagePullPolicy: {{ .Values.image.pullPolicy }}
           volumeMounts:
             - name: data
@@ -49,6 +49,15 @@ spec:
               {{- if .Values.volumes.bwprovisioner.subPath }}
               subPath: {{ .Values.volumes.bwprovisioner.subPath }}
               {{- end }}
+          livenessProbe:
+            httpGet:
+              scheme: HTTP
+              path: v1/liveness
+              port: {{ .Values.service.port }}
+            initialDelaySeconds: {{ .Values.probes.liveness.initialDelaySeconds }}
+            failureThreshold: {{ .Values.probes.liveness.failureThreshold }}
+            periodSeconds: {{ .Values.probes.liveness.periodSeconds }}
+            timeoutSeconds: {{ .Values.probes.liveness.timeoutSeconds }}
           resources:
             {{- toYaml .Values.resources | nindent 12 }}
           env:
@@ -69,6 +78,14 @@ spec:
               value: "{{ .Values.service.port }}"
             - name: CP_DOMAIN
               value: {{ include "bwprovisioner.cp.domain" . }}
+            - name: POD_NAMESPACE
+              valueFrom:
+                fieldRef:
+                  fieldPath: metadata.namespace
+            - name: POD_NAME
+              valueFrom:
+                fieldRef:
+                  fieldPath: metadata.name
         {{- if .Values.global.bwprovisioner.deploymanager.enabled }}
         - name: deploymanager
           image: {{ .Values.global.cic.data.SYSTEM_DOCKER_REGISTRY }}/tci/tci-app-proxy:{{ .Values.global.bwprovisioner.deploymanager.image.tag }}

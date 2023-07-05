@@ -1,0 +1,52 @@
+capabilityId: BWCE
+version:
+  - 1
+  - 0
+  - 0
+recipe:
+  helmCharts:
+    - name: bwprovisioner
+      namespace: ${NAMESPACE}
+      repository:
+        git:
+          host: https://github.com/sasahoo-tibco/tp-integration.git
+          path: /helm/charts/bwprovisioner
+          branch: main
+      values:
+        - content: |
+            global:
+              bwprovisioner:
+                data:
+                  namspace: ${NAMESPACE}
+                image:
+                  registry: 664529841144.dkr.ecr.us-west-2.amazonaws.com
+                  tag: 107
+            ingress:
+              annotations:
+                haproxy.org/cors-enable: "true"
+                haproxy.org/load-balance: leastconn
+                haproxy.org/src-ip-header: X-Real-IP
+                haproxy.org/timeout-http-request: 600s
+                ingress.kubernetes.io/rewrite-target: /
+                meta.helm.sh/release-name: bwprovisioner
+                meta.helm.sh/release-namespace: ${NAMESPACE}
+              enabled: true
+              hostsOverride: false
+            volumes:
+              bwprovisioner:
+                persistentVolumeClaim:
+                  create: true
+                  storageClassName: ${STORAGE_CLASS_NAME}
+            config:
+              SOURCE_REGISTRY: "664529841144.dkr.ecr.us-west-2.amazonaws.com"
+      flags:
+        install: true
+        createNamespace: true
+        dependencyUpdate: true
+        isDevTesting: false
+status: deployed
+region: us-west-2
+tags:
+  - Tag1
+  - Tag2
+

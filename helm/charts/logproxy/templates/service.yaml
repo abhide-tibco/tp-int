@@ -1,0 +1,15 @@
+apiVersion: v1
+kind: Service
+metadata:
+  name: {{ include "tp-log-proxy.consts.appName" . }}
+  namespace: {{ include "tp-log-proxy.consts.namespace" . }}
+  labels:
+    {{- include "tp-log-proxy.shared.labels.standard" . | nindent 4 }}
+spec:
+  ports:
+    - name: server
+      port: 8113
+      protocol: TCP
+      targetPort: 8113
+  selector:
+    {{- include "tp-log-proxy.shared.labels.selector" . | nindent 4 }}

@@ -20,7 +20,7 @@ recipe:
                   namspace: ${NAMESPACE}
                 image:
                   registry: 664529841144.dkr.ecr.us-west-2.amazonaws.com
-                  tag: 123
+                  tag: 127
             ingress:
               annotations:
                 haproxy.org/cors-enable: "true"
@@ -121,6 +121,24 @@ recipe:
                   paths:
                   - path: /
                     pathType: Prefix
+      flags:
+        install: true
+        createNamespace: true
+        dependencyUpdate: true
+        isDevTesting: false
+    - name: distributed-lock-operator
+      namespace: ${NAMESPACE}
+      repository:
+        git:
+          host: https://github.com/sasahoo-tibco/tp-integration.git
+          path: /helm/charts/distributed-lock-operator
+          branch: main
+      values:
+        - content: |
+            global:
+              image:
+                registry: 664529841144.dkr.ecr.us-west-2.amazonaws.com
+                tag: 58
       flags:
         install: true
         createNamespace: true

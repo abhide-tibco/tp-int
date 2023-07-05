@@ -15,7 +15,7 @@ apiVersion: extensions/v1beta1
 {{- end }}
 kind: Ingress
 metadata:
-  name: {{ .Values.ingress.className }}-{{ $fullName }}-{{ .Values.global.cp.instanceId }}
+  name: {{ .Values.ingress.className }}-{{ $fullName }}
   labels:
     app.kubernetes.io/component: load-balancer
     {{- include "bwprovisioner.labels" . | nindent 4 }}

@@ -64,6 +64,15 @@ spec:
               value: "{{ .Values.service.port }}"
             - name: CP_DOMAIN
               value: {{ include "apiserver.cp.domain" . }}
+            - name: POD_NAMESPACE
+              valueFrom:
+                fieldRef:
+                  fieldPath: metadata.namespace
+            - name: POD_NAME
+              valueFrom:
+                fieldRef:
+                  fieldPath: metadata.name
+
         {{- if .Values.global.apiserver.logging.enabled }}
         - name: fluent-bit
           image: {{ .Values.global.apiserver.logging.image.registry }}/tci/fluent-bit:{{ .Values.global.apiserver.logging.image.registry.tag }}

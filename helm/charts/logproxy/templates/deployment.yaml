@@ -1,0 +1,52 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: {{ include "tp-log-proxy.consts.appName" . }}
+  labels:
+    {{- include "tp-log-proxy.shared.labels.standard" . | nindent 4 }}
+spec:
+  replicas: {{ .Values.replicaCount }}
+  selector:
+    matchLabels:
+      {{- include "tp-log-proxy.shared.labels.selector" . | nindent 6 }}
+  strategy:
+    rollingUpdate:
+      maxSurge: 1
+    type: RollingUpdate
+  template:
+    metadata:
+      creationTimestamp: null
+      labels:
+        {{- include "tp-log-proxy.shared.labels.standard" . | nindent 8 }}
+    spec:
+      nodeSelector:
+        kubernetes.io/os: linux
+      terminationGracePeriodSeconds: 15
+      enableServiceLinks: false
+      containers:
+        - name: tp-logproxy
+          image: {{ .Values.global.logproxy.image.registry }}/piap/tp-log-proxy:{{ .Values.global.logproxy.image.tag }}
+          imagePullPolicy: {{ .Values.image.pullPolicy }}
+          resources:
+            requests:
+              cpu: 100m
+              memory: 128Mi
+            limits:
+              cpu: 500m
+              memory: 1024Mi
+          ports:
+            - containerPort: 8003
+              name: tp-logproxy
+          env:
+            - name: OPENSEARCH_HOST
+              value: ""
+            - name: OPENSEARCH_PORT
+              value: 8080 #TO BE FILLED IN
+            - name: OPENSEARCH_SCHEME
+              value: ""
+            - name: OPENSEARCH_USER
+              value: ""
+            - name: OPENSEARCH_PASSWORD
+              value: ""
+            - name: WHO
+              value: {{ .Values.global.cic.data.SYSTEM_WHO }}
