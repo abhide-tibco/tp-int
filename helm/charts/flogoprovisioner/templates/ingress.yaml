@@ -61,7 +61,7 @@ spec:
             {{- end }}
         {{- else}}
         paths:
-          - path: /tibco/agent/integration/{{ $.Values.global.cp.instanceId }}/bwprovisioner/
+          - path: /tibco/agent/integration/{{ $.Values.global.cp.instanceId }}/flogoprovisioner/
             pathType: Prefix
             backend:
               service:
