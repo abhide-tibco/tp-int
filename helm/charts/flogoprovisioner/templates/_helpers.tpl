@@ -10,18 +10,7 @@ Create a default fully qualified app name.
 We truncate at 63 chars because some Kubernetes name fields are limited to this (by the DNS naming spec).
 If release name contains chart name it will be used as a full name.
 */}}
-{{- define "flogoprovisioner.fullname" -}}
-{{- if .Values.fullnameOverride }}
-{{- .Values.fullnameOverride | trunc 63 | trimSuffix "-" }}
-{{- else }}
-{{- $name := default .Chart.Name .Values.nameOverride }}
-{{- if contains $name .Release.Name }}
-{{- .Release.Name | trunc 63 | trimSuffix "-" }}
-{{- else }}
-{{- printf "%s-%s" .Release.Name $name | trunc 63 | trimSuffix "-" }}
-{{- end }}
-{{- end }}
-{{- end }}
+{{- define "flogoprovisioner.fullname" }}flogoprovisioner{{ end -}}
 
 {{/*
 Create chart name and version as used by the chart label.
@@ -48,6 +37,9 @@ Selector labels
 {{- define "flogoprovisioner.selectorLabels" -}}
 app.kubernetes.io/name: {{ include "flogoprovisioner.name" . }}
 app.kubernetes.io/instance: {{ .Release.Name }}
+app.kubernetes.io/part-of: "bwce"
+platform.tibco.com/workload-type: "capability-service"
+platform.tibco.com/dataplane-id: {{ .Values.global.cp.dataplaneId }}
 {{- end }}
 
 {{/*
@@ -74,3 +66,9 @@ Integration storage folder pvc name
 {{- define "flogoprovisioner.storage.pvc.name" -}}
 {{- include "flogoprovisioner.persistentVolumeClaim.claimName" (dict "existingClaim" .Values.volumes.flogoprovisioner.existingClaim "releaseName" ( include "flogoprovisioner.fullname" . ) "volumeName" "integration" ) -}}
 {{- end -}}
+
+{{- define "flogoprovisioner.cp.domain" }}cp-proxy.tibco-dp-{{ .Values.global.cp.dataplaneId }}.svc.cluster.local{{ end -}}
+
+{{- define "flogoprovisioner.sa" }}tp-dp-{{ .Values.global.cp.dataplaneId }}-sa{{ end -}}
+{{- define "flogoprovisioner.role" }}tp-dp-{{ .Values.global.cp.dataplaneId }}-role{{ end -}}
+{{- define "flogoprovisioner.role-bind" }}tp-dp-{{ .Values.global.cp.dataplaneId }}-role-bind{{ end -}}

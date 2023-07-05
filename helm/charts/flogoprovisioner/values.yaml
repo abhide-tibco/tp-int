@@ -11,7 +11,7 @@ global:
   cp:
     dataplaneId: dp-dp1
     instanceId: defaultinstid
-  bwprovisioner:
+  flogoprovisioner:
     data:
       namespace: dp-integration-default
     image:
