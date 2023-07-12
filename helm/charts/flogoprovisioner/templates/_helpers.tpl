@@ -7,8 +7,6 @@ Expand the name of the chart.
 
 {{/*
 Create a default fully qualified app name.
-We truncate at 63 chars because some Kubernetes name fields are limited to this (by the DNS naming spec).
-If release name contains chart name it will be used as a full name.
 */}}
 {{- define "flogoprovisioner.fullname" }}flogoprovisioner{{ end -}}
 
@@ -37,9 +35,10 @@ Selector labels
 {{- define "flogoprovisioner.selectorLabels" -}}
 app.kubernetes.io/name: {{ include "flogoprovisioner.name" . }}
 app.kubernetes.io/instance: {{ .Release.Name }}
-app.kubernetes.io/part-of: "bwce"
+app.kubernetes.io/part-of: "flogo"
 platform.tibco.com/workload-type: "capability-service"
 platform.tibco.com/dataplane-id: {{ .Values.global.cp.dataplaneId }}
+platform.tibco.com/capability-instance-id: {{ .Values.global.cp.instanceId }}
 {{- end }}
 
 {{/*
