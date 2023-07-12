@@ -49,15 +49,6 @@ spec:
               {{- if .Values.volumes.bwprovisioner.subPath }}
               subPath: {{ .Values.volumes.bwprovisioner.subPath }}
               {{- end }}
-          livenessProbe:
-            httpGet:
-              scheme: HTTP
-              path: v1/liveness
-              port: {{ .Values.service.port }}
-            initialDelaySeconds: {{ .Values.probes.liveness.initialDelaySeconds }}
-            failureThreshold: {{ .Values.probes.liveness.failureThreshold }}
-            periodSeconds: {{ .Values.probes.liveness.periodSeconds }}
-            timeoutSeconds: {{ .Values.probes.liveness.timeoutSeconds }}
           resources:
             {{- toYaml .Values.resources | nindent 12 }}
           env:
