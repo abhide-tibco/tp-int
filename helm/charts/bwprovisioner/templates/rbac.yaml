@@ -1,11 +1,10 @@
-{{- if .Values.rbac.enabled }}
+{{- if eq .Values.global.bwprovisioner.serviceAccount "" }}
 apiVersion: v1
 kind: ServiceAccount
 metadata:
   name: {{ include "bwprovisioner.sa" . }}
 {{- end }}
 ---
-{{- if .Values.rbac.enabled }}
 apiVersion: rbac.authorization.k8s.io/v1
 kind: Role
 metadata:
@@ -29,18 +28,19 @@ rules:
   - apiGroups: [""]
     resources: ["services"]
     verbs: ["get","list","watch","create","delete","patch","update"]
-{{- end }}
 ---
-{{- if .Values.rbac.enabled }}
 kind: RoleBinding
 apiVersion: rbac.authorization.k8s.io/v1
 metadata:
   name: {{ include "bwprovisioner.role-bind" . }}
 subjects:
   - kind: ServiceAccount
+    {{- if eq .Values.global.bwprovisioner.serviceAccount "" }}
     name: {{ include "bwprovisioner.sa" . }}
+    {{- else }}
+    name: {{ .Values.global.bwprovisioner.serviceAccount }}
+    {{- end }}
 roleRef:
   kind: Role
   name: {{ include "bwprovisioner.role" . }}
   apiGroup: rbac.authorization.k8s.io
-{{- end }}

@@ -29,7 +29,9 @@ spec:
       imagePullSecrets:
         {{- toYaml . | nindent 8 }}
       {{- end }}
-      {{- if .Values.rbac.enabled }}
+      {{- if .Values.global.flogoprovisioner.serviceAccount }}
+      serviceAccountName: {{ .Values.global.flogoprovisioner.serviceAccount }}
+      {{- else }}
       serviceAccountName: {{ include "flogoprovisioner.sa" . }}
       {{- end }}
       securityContext:
@@ -49,15 +51,6 @@ spec:
               {{- if .Values.volumes.flogoprovisioner.subPath }}
               subPath: {{ .Values.volumes.flogoprovisioner.subPath }}
               {{- end }}
-          livenessProbe:
-            httpGet:
-              scheme: HTTP
-              path: v1/liveness
-              port: {{ .Values.service.port }}
-            initialDelaySeconds: {{ .Values.probes.liveness.initialDelaySeconds }}
-            failureThreshold: {{ .Values.probes.liveness.failureThreshold }}
-            periodSeconds: {{ .Values.probes.liveness.periodSeconds }}
-            timeoutSeconds: {{ .Values.probes.liveness.timeoutSeconds }}
           resources:
             {{- toYaml .Values.resources | nindent 12 }}
           env:

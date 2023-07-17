@@ -41,7 +41,7 @@ recipe:
               SOURCE_REGISTRY: "664529841144.dkr.ecr.us-west-2.amazonaws.com"
       flags:
         install: true
-        createNamespace: true
+        createNamespace: false
         dependencyUpdate: true
         isDevTesting: false
 status: deployed

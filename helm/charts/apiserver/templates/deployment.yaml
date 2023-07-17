@@ -24,7 +24,9 @@ spec:
       imagePullSecrets:
         {{- toYaml . | nindent 8 }}
       {{- end }}
-      {{- if .Values.rbac.enabled }}
+      {{- if .Values.global.apiserver.serviceAccount }}
+      serviceAccountName: {{ .Values.global.apiserver.serviceAccount }}
+      {{- else }}
       serviceAccountName: {{ include "apiserver.sa" . }}
       {{- end }}
       securityContext:

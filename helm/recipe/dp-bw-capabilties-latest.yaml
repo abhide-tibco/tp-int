@@ -41,7 +41,7 @@ recipe:
                     storage: 4Gi
     flags:
       install: true
-      createNamespace: true
+      createNamespace: false
       dependencyUpdate: true
 isDevTesting: true
 status: deployed

@@ -29,7 +29,9 @@ spec:
       imagePullSecrets:
         {{- toYaml . | nindent 8 }}
       {{- end }}
-      {{- if .Values.rbac.enabled }}
+      {{- if .Values.global.bwprovisioner.serviceAccount }}
+      serviceAccountName: {{ .Values.global.bwprovisioner.serviceAccount }}
+      {{- else }}
       serviceAccountName: {{ include "bwprovisioner.sa" . }}
       {{- end }}
       securityContext:
@@ -67,6 +69,8 @@ spec:
               value: {{ .Values.global.cp.instanceId }}
             - name: SERVER_PORT
               value: "{{ .Values.service.port }}"
+            - name: APP_INIT_IMAGE_TAG
+              value: "8"
             - name: CP_DOMAIN
               value: {{ include "bwprovisioner.cp.domain" . }}
             - name: POD_NAMESPACE

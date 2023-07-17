@@ -22,4 +22,4 @@ helmCharts:
 
     flags:
       install: true
-      createNamespace: true
+      createNamespace: false

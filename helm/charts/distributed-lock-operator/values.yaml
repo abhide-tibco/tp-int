@@ -6,8 +6,8 @@ global:
     tag: 58
   cp:
     dataplaneId: ""
-    distlockoperator:
-      serviceAccount: "" #user provided service account.
+  distlockoperator:
+    serviceAccount: "" #user provided service account.
 
 enableWebHooks: true
 

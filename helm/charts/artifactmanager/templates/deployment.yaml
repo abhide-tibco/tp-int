@@ -29,7 +29,9 @@ spec:
       imagePullSecrets:
         {{- toYaml . | nindent 8 }}
       {{- end }}
-      {{- if .Values.rbac.enabled }}
+      {{- if .Values.global.artifactmanager.serviceAccount }}
+      serviceAccountName: {{ .Values.global.artifactmanager.serviceAccount }}
+      {{- else }}
       serviceAccountName: {{ include "artifactmanager.sa" . }}
       {{- end }}
       securityContext:
@@ -41,7 +43,7 @@ spec:
               name: server
           securityContext:
             {{- toYaml .Values.securityContext | nindent 12 }}
-          image: {{ .Values.global.artifactmanager.image.registry }}/piap/orchestrator:{{ .Values.global.artifactmanager.image.tag }}
+          image: {{ .Values.global.artifactmanager.image.registry }}/piap/artifactmanager:{{ .Values.global.artifactmanager.image.tag }}
           imagePullPolicy: {{ .Values.image.pullPolicy }}
           volumeMounts:
             - name: data

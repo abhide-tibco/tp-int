@@ -343,6 +343,6 @@ helmCharts:
             DP_INTERNAL_URL: "test.tci-env.ap-southeast-2.tcie.pro"
     flags:
       install: true
-      createNamespace: true
+      createNamespace: false
       dependencyUpdate: true
 

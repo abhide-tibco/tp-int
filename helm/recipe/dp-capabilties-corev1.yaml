@@ -39,7 +39,7 @@ recipe:
                   storageClassName: ${STORAGE_CLASS_NAME}
       flags:
         install: true
-        createNamespace: true
+        createNamespace: false
         dependencyUpdate: true
         isDevTesting: false
     - name: distributed-lock-operator
@@ -57,7 +57,7 @@ recipe:
                 tag: 58
       flags:
         install: true
-        createNamespace: true
+        createNamespace: false
         dependencyUpdate: true
         isDevTesting: false
 status: deployed

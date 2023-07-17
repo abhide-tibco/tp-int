@@ -98,6 +98,6 @@ helmCharts:
               existingClaim: "test-cp-integration-fs-store-claim"
     flags:
       install: true
-      createNamespace: true
+      createNamespace: false
       dependencyUpdate: true
 

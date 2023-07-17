@@ -83,6 +83,6 @@ helmCharts:
                   pathType: Prefix
     flags:
       install: true
-      createNamespace: true
+      createNamespace: false
       dependencyUpdate: true
 

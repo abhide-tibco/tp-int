@@ -39,6 +39,6 @@ helmCharts:
                   storage: 1Gi # Storage size should be provided
     flags:
       install: true
-      createNamespace: true
+      createNamespace: false
       dependencyUpdate: true
 

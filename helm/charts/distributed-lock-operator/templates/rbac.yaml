@@ -2,7 +2,7 @@
 
 ---
 
-{{- if eq .Values.global.serviceAccount "" }}
+{{- if eq .Values.global.distlockoperator.serviceAccount "" }}
 kind: ServiceAccount
 apiVersion: v1
 metadata:
@@ -63,10 +63,11 @@ roleRef:
   name: {{ include "dp-core-distributed-lock-operator.shared.func.globalResourcePrefix" . }}role
 subjects:
 - kind: ServiceAccount
-  {{- if eq .Values.global.cp.distlockoperator.serviceAccount "" }}
+  {{- if eq .Values.global.distlockoperator.serviceAccount "" }}
   name: {{ include "dp-core-distributed-lock-operator.consts.appName" . }}
-  {{- else }}
-  name: {{ .Values.global.cp.distlockoperator.serviceAccount }}
-  {{- end }}
 - kind: ServiceAccount
   name: tp-dp-{{ .Values.global.cp.dataplaneId }}-sa
+  {{- else }}
+  name: {{ .Values.global.distlockoperator.serviceAccount }}
+  {{- end }}
+

@@ -20,7 +20,7 @@ recipe:
                   namspace: ${NAMESPACE}
                 image:
                   registry: 664529841144.dkr.ecr.us-west-2.amazonaws.com
-                  tag: 127
+                  tag: 145
             ingress:
               annotations:
                 haproxy.org/cors-enable: "true"
@@ -41,7 +41,7 @@ recipe:
               SOURCE_REGISTRY: "664529841144.dkr.ecr.us-west-2.amazonaws.com"
       flags:
         install: true
-        createNamespace: true
+        createNamespace: false
         dependencyUpdate: true
     - name: artifactmanager
       namespace: ${NAMESPACE}
@@ -58,7 +58,7 @@ recipe:
                   namspace: ${NAMESPACE}
                 image:
                   registry: 664529841144.dkr.ecr.us-west-2.amazonaws.com
-                  tag: 18-m1-ext
+                  tag: 24
             ingress:
               annotations:
                 haproxy.org/cors-enable: "true"
@@ -77,7 +77,7 @@ recipe:
                   storageClassName: ${STORAGE_CLASS_NAME}
       flags:
         install: true
-        createNamespace: true
+        createNamespace: false
         dependencyUpdate: true
     - name: apiserver
       namespace: ${NAMESPACE}
@@ -123,7 +123,7 @@ recipe:
                     pathType: Prefix
       flags:
         install: true
-        createNamespace: true
+        createNamespace: false
         dependencyUpdate: true
         isDevTesting: false
     - name: distributed-lock-operator
@@ -141,7 +141,7 @@ recipe:
                 tag: 58
       flags:
         install: true
-        createNamespace: true
+        createNamespace: false
         dependencyUpdate: true
         isDevTesting: false
 status: deployed

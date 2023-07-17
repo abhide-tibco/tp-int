@@ -12,6 +12,7 @@ global:
     dataplaneId: dp-dp1
     instanceId: defaultinstid
   bwprovisioner:
+    serviceAccount: ""
     data:
       namespace: dp-integration-default
     image:
@@ -207,5 +208,3 @@ volumes:
 
     # -- When `persistentVolumeClaim.create` is `false`, then use this value to define an already-existing PVC.
     existingClaim: ""
-rbac:
-  enabled: true

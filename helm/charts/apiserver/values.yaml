@@ -11,6 +11,7 @@ global:
     dataplaneId: dp-dp1
     instanceId: defaultinstid
   apiserver:
+    serviceAccount: ""
     data:
       namespace: dp-integration-default
     image:
@@ -147,6 +148,3 @@ nodeSelector: {}
 tolerations: []
 
 affinity: {}
-
-rbac:
-  enabled: true

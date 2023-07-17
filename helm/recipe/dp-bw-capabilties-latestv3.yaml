@@ -3,7 +3,7 @@ version: 1.0.0
 recipe:
   helmCharts:
     - name: bwprovisioner
-      namespace: tibco-dp-chcjpko2p4gfuco11ti0
+      namespace: tibco-dp-chdhd202p4g2r8ft6hf0
       repository:
         git:
           host: https://github.com/sasahoo-tibco/tp-integration.git
@@ -14,7 +14,7 @@ recipe:
             global:
               bwprovisioner:
                 data:
-                  namspace: tibco-dp-chcjpko2p4gfuco11ti0
+                  namspace: tibco-dp-chdhd202p4g2r8ft6hf0
                 image:
                   registry: 664529841144.dkr.ecr.us-west-2.amazonaws.com
                   tag: 38-m1-ext
@@ -26,7 +26,7 @@ recipe:
                 haproxy.org/timeout-http-request: 600s
                 ingress.kubernetes.io/rewrite-target: /
                 meta.helm.sh/release-name: bwprovisioner
-                meta.helm.sh/release-namespace: tibco-dp-chcjpko2p4gfuco11ti0
+                meta.helm.sh/release-namespace: tibco-dp-chdhd202p4g2r8ft6hf0
               enabled: true
               hostsOverride: false
             volumes:
@@ -34,12 +34,15 @@ recipe:
                 persistentVolumeClaim:
                   create: true
                   storageClassName: "gp2"
+            config:
+              #  DP_INTERNAL_URL: "test.tci-env.ap-southeast-2.tcie.pro"
+              DP_INTERNAL_URL: "***NOT AVAILABLE***"
       flags:
         install: true
-        createNamespace: true
+        createNamespace: false
         dependencyUpdate: true
     - name: artifactmanager
-      namespace: tibco-dp-chcjpko2p4gfuco11ti0
+      namespace: tibco-dp-chdhd202p4g2r8ft6hf0
       repository:
         git:
           host: https://github.com/sasahoo-tibco/tp-integration.git
@@ -50,7 +53,7 @@ recipe:
             global:
               artifactmanager:
                 data:
-                  namspace: tibco-dp-chcjpko2p4gfuco11ti0
+                  namspace: tibco-dp-chdhd202p4g2r8ft6hf0
                 image:
                   registry: 664529841144.dkr.ecr.us-west-2.amazonaws.com
                   tag: 11-m1-ext
@@ -62,7 +65,7 @@ recipe:
                 haproxy.org/timeout-http-request: 600s
                 ingress.kubernetes.io/rewrite-target: /
                 meta.helm.sh/release-name: artifactmanager
-                meta.helm.sh/release-namespace: tibco-dp-chcjpko2p4gfuco11ti0
+                meta.helm.sh/release-namespace: tibco-dp-chdhd202p4g2r8ft6hf0
               enabled: true
               hostsOverride: false
             volumes:
@@ -72,10 +75,10 @@ recipe:
                   storageClassName: "gp2"
       flags:
         install: true
-        createNamespace: true
+        createNamespace: false
         dependencyUpdate: true
     - name: apiserver
-      namespace: tibco-dp-chcjpko2p4gfuco11ti0
+      namespace: tibco-dp-chdhd202p4g2r8ft6hf0
       repository:
         git:
           host: https://github.com/sasahoo-tibco/tp-integration.git
@@ -86,7 +89,7 @@ recipe:
             global:
               apiserver:
                 data:
-                  namspace: tibco-dp-chcjpko2p4gfuco11ti0
+                  namspace: tibco-dp-chdhd202p4g2r8ft6hf0
                 image:
                   registry: 664529841144.dkr.ecr.us-west-2.amazonaws.com
                   tag: 7-m1-ext
@@ -98,7 +101,7 @@ recipe:
                 haproxy.org/timeout-http-request: 600s
                 ingress.kubernetes.io/rewrite-target: /
                 meta.helm.sh/release-name: apiserver
-                meta.helm.sh/release-namespace: tibco-dp-chcjpko2p4gfuco11ti0
+                meta.helm.sh/release-namespace: tibco-dp-chdhd202p4g2r8ft6hf0
               enabled: true
               hostsOverride: false
             ingressExternal:
@@ -109,7 +112,7 @@ recipe:
                 haproxy.org/timeout-http-request: 600s
                 ingress.kubernetes.io/rewrite-target: /
                 meta.helm.sh/release-name: apiserver
-                meta.helm.sh/release-namespace: tibco-dp-chcjpko2p4gfuco11ti0
+                meta.helm.sh/release-namespace: tibco-dp-chdhd202p4g2r8ft6hf0
               enabled: true
               hosts:
                 - host: "test.tci-env.us-west-2.tcie.pro"
@@ -118,7 +121,7 @@ recipe:
                     pathType: Prefix
       flags:
         install: true
-        createNamespace: true
+        createNamespace: false
         dependencyUpdate: true
 isDevTesting: true
 status: deployed

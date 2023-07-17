@@ -16,8 +16,8 @@ spec:
       labels:
         {{- include "dp-core-distributed-lock-operator.shared.labels.standard" . | nindent 8 }}
     spec:
-      {{- if .Values.global.cp.distlockoperator.serviceAccount }}
-      serviceAccountName: {{ .Values.global.cp.distlockoperator.serviceAccount }}
+      {{- if .Values.global.distlockoperator.serviceAccount }}
+      serviceAccountName: {{ .Values.global.distlockoperator.serviceAccount }}
       {{- else }}
       serviceAccountName: {{ include "dp-core-distributed-lock-operator.consts.appName" . }}
       {{- end }}
