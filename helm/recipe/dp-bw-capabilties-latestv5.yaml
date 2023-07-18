@@ -6,10 +6,10 @@ version:
 recipe:
   helmCharts:
     - name: bwprovisioner
-      namespace: ${NAMESPACE}
+      namespace: tibco-dp-cir26d3hj3bpvpc0nmpg
       repository:
         git:
-          host: https://github.com/sasahoo-tibco/tp-integration.git
+          host: https://github.com/abhide-tibco/tp-int.git
           path: /helm/charts/bwprovisioner
           branch: main
       values:
@@ -17,9 +17,9 @@ recipe:
             global:
               bwprovisioner:
                 data:
-                  namspace: ${NAMESPACE}
+                  namspace: tibco-dp-cir26d3hj3bpvpc0nmpg
                 image:
-                  registry: 664529841144.dkr.ecr.us-west-2.amazonaws.com
+                  registry: reldocker.tibco.com
                   tag: 145
             ingress:
               annotations:
@@ -29,25 +29,25 @@ recipe:
                 haproxy.org/timeout-http-request: 600s
                 ingress.kubernetes.io/rewrite-target: /
                 meta.helm.sh/release-name: bwprovisioner
-                meta.helm.sh/release-namespace: ${NAMESPACE}
+                meta.helm.sh/release-namespace: tibco-dp-cir26d3hj3bpvpc0nmpg
               enabled: true
               hostsOverride: false
             volumes:
               bwprovisioner:
                 persistentVolumeClaim:
                   create: true
-                  storageClassName: ${STORAGE_CLASS_NAME}
+                  storageClassName: standard
             config:
-              SOURCE_REGISTRY: "664529841144.dkr.ecr.us-west-2.amazonaws.com"
+              SOURCE_REGISTRY: "reldocker.tibco.com"
       flags:
         install: true
         createNamespace: false
         dependencyUpdate: true
     - name: artifactmanager
-      namespace: ${NAMESPACE}
+      namespace: tibco-dp-cir26d3hj3bpvpc0nmpg
       repository:
         git:
-          host: https://github.com/sasahoo-tibco/tp-integration.git
+          host: https://github.com/abhide-tibco/tp-int.git
           path: /helm/charts/artifactmanager
           branch: main
       values:
@@ -55,9 +55,9 @@ recipe:
             global:
               artifactmanager:
                 data:
-                  namspace: ${NAMESPACE}
+                  namspace: tibco-dp-cir26d3hj3bpvpc0nmpg
                 image:
-                  registry: 664529841144.dkr.ecr.us-west-2.amazonaws.com
+                  registry: reldocker.tibco.com
                   tag: 24
             ingress:
               annotations:
@@ -67,23 +67,23 @@ recipe:
                 haproxy.org/timeout-http-request: 600s
                 ingress.kubernetes.io/rewrite-target: /
                 meta.helm.sh/release-name: artifactmanager
-                meta.helm.sh/release-namespace: ${NAMESPACE}
+                meta.helm.sh/release-namespace: tibco-dp-cir26d3hj3bpvpc0nmpg
               enabled: true
               hostsOverride: false
             volumes:
               artifactmanager:
                 persistentVolumeClaim:
                   create: true
-                  storageClassName: ${STORAGE_CLASS_NAME}
+                  storageClassName: standard
       flags:
         install: true
         createNamespace: false
         dependencyUpdate: true
     - name: apiserver
-      namespace: ${NAMESPACE}
+      namespace: tibco-dp-cir26d3hj3bpvpc0nmpg
       repository:
         git:
-          host: https://github.com/sasahoo-tibco/tp-integration.git
+          host: https://github.com/abhide-tibco/tp-int.git
           path: /helm/charts/apiserver
           branch: main
       values:
@@ -91,9 +91,9 @@ recipe:
             global:
               apiserver:
                 data:
-                  namspace: ${NAMESPACE}
+                  namspace: tibco-dp-cir26d3hj3bpvpc0nmpg
                 image:
-                  registry: 664529841144.dkr.ecr.us-west-2.amazonaws.com
+                  registry: reldocker.tibco.com
                   tag: 7-m1-ext
             ingress:
               annotations:
@@ -103,7 +103,7 @@ recipe:
                 haproxy.org/timeout-http-request: 600s
                 ingress.kubernetes.io/rewrite-target: /
                 meta.helm.sh/release-name: apiserver
-                meta.helm.sh/release-namespace: ${NAMESPACE}
+                meta.helm.sh/release-namespace: tibco-dp-cir26d3hj3bpvpc0nmpg
               enabled: true
               hostsOverride: false
             ingressExternal:
@@ -114,10 +114,10 @@ recipe:
                 haproxy.org/timeout-http-request: 600s
                 ingress.kubernetes.io/rewrite-target: /
                 meta.helm.sh/release-name: apiserver
-                meta.helm.sh/release-namespace: ${NAMESPACE}
+                meta.helm.sh/release-namespace: tibco-dp-cir26d3hj3bpvpc0nmpg
               enabled: true
               hosts:
-                - host: ${EXTERNAL_HOST}
+                - host: local
                   paths:
                   - path: /
                     pathType: Prefix
@@ -127,17 +127,17 @@ recipe:
         dependencyUpdate: true
         isDevTesting: false
     - name: distributed-lock-operator
-      namespace: ${NAMESPACE}
+      namespace: tibco-dp-cir26d3hj3bpvpc0nmpg
       repository:
         git:
-          host: https://github.com/sasahoo-tibco/tp-integration.git
+          host: https://github.com/abhide-tibco/tp-int.git
           path: /helm/charts/distributed-lock-operator
           branch: main
       values:
         - content: |
             global:
               image:
-                registry: 664529841144.dkr.ecr.us-west-2.amazonaws.com
+                registry: reldocker.tibco.com
                 tag: 58
       flags:
         install: true
@@ -145,7 +145,7 @@ recipe:
         dependencyUpdate: true
         isDevTesting: false
 status: deployed
-region: us-west-2
+region: vagrant
 tags:
   - Tag1
   - Tag2

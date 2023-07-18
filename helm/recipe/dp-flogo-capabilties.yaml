@@ -6,10 +6,10 @@ version:
 recipe:
   helmCharts:
     - name: flogoprovisioner
-      namespace: ${NAMESPACE}
+      namespace: tibco-dp-cir26d3hj3bpvpc0nmpg
       repository:
         git:
-          host: https://github.com/sasahoo-tibco/tp-integration.git
+          host: https://github.com/abhide-tibco/tp-int.git
           path: /helm/charts/flogoprovisioner
           branch: main
       values:
@@ -17,9 +17,9 @@ recipe:
             global:
               flogoprovisioner:
                 data:
-                  namspace: ${NAMESPACE}
+                  namspace: tibco-dp-cir26d3hj3bpvpc0nmpg
                 image:
-                  registry: 664529841144.dkr.ecr.us-west-2.amazonaws.com
+                  registry: reldocker.tibco.com
                   tag: 9
             ingress:
               annotations:
@@ -29,23 +29,23 @@ recipe:
                 haproxy.org/timeout-http-request: 600s
                 ingress.kubernetes.io/rewrite-target: /
                 meta.helm.sh/release-name: flogoprovisioner
-                meta.helm.sh/release-namespace: ${NAMESPACE}
+                meta.helm.sh/release-namespace: tibco-dp-cir26d3hj3bpvpc0nmpg
               enabled: true
               hostsOverride: false
             volumes:
               flogoprovisioner:
                 persistentVolumeClaim:
                   create: true
-                  storageClassName: ${STORAGE_CLASS_NAME}
+                  storageClassName: standard
             config:
-              SOURCE_REGISTRY: "664529841144.dkr.ecr.us-west-2.amazonaws.com"
+              SOURCE_REGISTRY: "reldocker.tibco.com"
       flags:
         install: true
         createNamespace: false
         dependencyUpdate: true
         isDevTesting: false
 status: deployed
-region: us-west-2
+region: vagrant
 tags:
   - Tag1
   - Tag2
